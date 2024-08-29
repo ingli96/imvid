@@ -1,0 +1,5 @@
+pika
+torch
+diffusers
+transformers
+accelerate

@@ -1,0 +1,34 @@
+version: '3'
+
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  fastapi:
+    build: ./fastapi_service
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./shared_volume:/app/shared_volume
+    depends_on:
+      - rabbitmq
+
+  worker:
+    build: ./worker_service
+    volumes:
+      - ./shared_volume:/app/shared_volume
+    depends_on:
+      - rabbitmq
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+volumes:
+  shared_volume:
