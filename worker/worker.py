@@ -22,6 +22,7 @@ pipeline = StableVideoDiffusionPipeline.from_pretrained(
     variant="fp16",
 )
 pipeline.to("cuda")
+print("Model loaded")
 
 # RabbitMQ connection
 connection = pika.BlockingConnection(pika.ConnectionParameters('rabbitmq'))
