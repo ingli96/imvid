@@ -13,11 +13,11 @@ def process_image(image_filename):
 
     generator = torch.manual_seed(42)
     frames = pipeline(image, num_inference_steps=25, decode_chunk_size=8, generator=generator).frames[0]
-    export_to_video(frames, output_path, fps=7)
+    export_to_video(frames, output_path, fps=6)
 
 # Load the model once
 pipeline = StableVideoDiffusionPipeline.from_pretrained(
-    "stabilityai/stable-video-diffusion-img2vid-xt",
+    "stabilityai/stable-video-diffusion-img2vid-xt-1-1",
     torch_dtype=torch.float16,
     variant="fp16",
 )
