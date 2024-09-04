@@ -15,17 +15,20 @@ def process_image(image_filename):
     frames = pipeline(image, num_inference_steps=25, decode_chunk_size=8, generator=generator).frames[0]
     export_to_video(frames, output_path, fps=6)
 
-# Load the model once
 pipeline = StableVideoDiffusionPipeline.from_pretrained(
-    "stabilityai/stable-video-diffusion-img2vid-xt-1-1",
+    "stabilityai/stable-video-diffusion-img2vid-xt",
     torch_dtype=torch.float16,
     variant="fp16",
 )
 pipeline.to("cuda")
 print("Model loaded")
 
+# Get RabbitMQ host and port from environment variables
+rabbitmq_host = os.getenv("RABBITMQ_HOST", "localhost")  # This will be the external IP (e.g., 192.168.1.10)
+rabbitmq_port = int(os.getenv("RABBITMQ_PORT", 8001))  # Use the mapped port 8001
+
 # RabbitMQ connection
-connection = pika.BlockingConnection(pika.ConnectionParameters('rabbitmq'))
+connection = pika.BlockingConnection(pika.ConnectionParameters(host=rabbitmq_host, port=rabbitmq_port))
 channel = connection.channel()
 channel.queue_declare(queue='image_queue')
 
